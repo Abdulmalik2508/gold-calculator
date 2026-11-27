@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102c25">
+<title>حاسبة الذهب العُمانية</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#f4f6f3;color:#202b27;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+header{
+ background:#102c25;color:white;padding:28px 20px;
+ border-radius:0 0 25px 25px;
+}
+header h1{margin:0 0 8px;font-size:25px}
+header p{margin:0;color:#c8d8d0;font-size:14px}
+main{max-width:550px;margin:auto;padding:18px}
+.card{
+ background:white;padding:19px;margin-bottom:15px;
+ border-radius:17px;box-shadow:0 3px 12px #0000000a;
+}
+h2{font-size:17px;margin:0 0 17px}
+label{display:block;font-size:13px;margin:13px 0 7px;color:#52615a}
+input,select{
+ width:100%;padding:13px;border:1px solid #d9e0db;
+ border-radius:10px;font-size:16px;background:#fff;color:#202b27;
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{
+ width:100%;padding:15px;border:0;border-radius:11px;
+ background:#b68b48;color:white;font-size:17px;font-weight:bold;
+ margin-top:17px;
+}
+.result{
+ background:#102c25;color:white;padding:20px;
+ border-radius:16px;text-align:center;
+}
+.result small{color:#c8d8d0}
+.total{font-size:32px;font-weight:bold;margin:12px 0}
+.line{
+ display:flex;justify-content:space-between;
+ padding:11px 0;border-bottom:1px solid #edf0ed;font-size:14px;
+}
+.grade{padding:13px;border-radius:10px;text-align:center;font-weight:bold;margin-top:14px}
+.green{background:#e3f5e9;color:#18743c}
+.yellow{background:#fff2d6;color:#95610a}
+.red{background:#ffe6e3;color:#a52e26}
+.note{font-size:12px;color:#77817b;line-height:1.8}
+footer{text-align:center;color:#88918b;font-size:12px;padding:15px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>✦ حاسبة الذهب العُمانية</h1>
+<p>احسب قيمة الذهب واكتشف مدى عدالة السعر قبل الشراء</p>
+</header>
+
+<main>
+<div class="card">
+<h2>بيانات الذهب</h2>
+
+<label>عيار الذهب</label>
+<select id="karat">
+<option value="24">24 قيراط</option>
+<option value="22">22 قيراط</option>
+<option value="21" selected>21 قيراط</option>
+<option value="18">18 قيراط</option>
+</select>
+
+<div class="grid">
+<div>
+<label>الوزن (جرام)</label>
+<input id="weight" type="number" step="0.001" placeholder="مثال: 20.89">
+</div>
+<div>
+<label>سعر الجرام الخام (ر.ع)</label>
+<input id="price" type="number" step="0.001" placeholder="سعر جرام العيار المختار">
+</div>
+</div>
+
+<label>المصنعية لكل جرام (ر.ع)</label>
+<input id="making" type="number" step="0.001" value="6">
+
+<label>ضريبة القيمة المضافة (%)</label>
+<input id="tax" type="number" value="5" step="0.1">
+
+<label>متوسط المصنعية المرجعي لكل جرام (ر.ع)</label>
+<input id="benchmark" type="number" value="5" step="0.1">
+
+<p class="note">أدخل سعر الجرام للعيار المختار، وليس سعر جرام عيار 24. متوسط المصنعية المرجعي قابل للتعديل حسب عروض المحلات.</p>
+
+<button onclick="calculate()">احسب السعر وحلل الصفقة</button>
+</div>
+
+<div id="output" style="display:none">
+<div class="result">
+<small>السعر النهائي شامل الضريبة</small>
+<div class="total" id="total">0.000 ر.ع</div>
+<small>القيمة الإجمالية للذهب والمصنعية والضريبة</small>
+</div>
+
+<div class="card">
+<h2>تفاصيل الحساب</h2>
+<div class="line"><span>قيمة الذهب الخام</span><b id="gold"></b></div>
+<div class="line"><span>إجمالي المصنعية</span><b id="work"></b></div>
+<div class="line"><span>الضريبة</span><b id="vat"></b></div>
+<div class="line"><span>المصنعية لكل جرام</span><b id="pergram"></b></div>
+</div>
+
+<div class="card">
+<h2>مؤشر عدالة السعر</h2>
+<div id="grade" class="grade"></div>
+<p id="analysis" style="line-height:1.8;font-size:14px"></p>
+<div class="line"><span>السعر وفق المصنعية المرجعية</span><b id="fair"></b></div>
+<div class="line"><span>الفرق عن السعر المرجعي</span><b id="difference"></b></div>
+<div class="line"><span>التوفير المحتمل بالتفاوض</span><b id="saving"></b></div>
+<p class="note">هذا المؤشر يقارن المصنعية بالمتوسط الذي أدخلته أنت، ولا يمثل مسحًا مباشرًا لأسعار محلات الذهب. كما أن اختلاف التصميم والعلامة التجارية قد يبرر اختلاف المصنعية.</p>
+</div>
+</div>
+</main>
+
+<footer>Gold Calculator Oman © 2026</footer>
+
+<script>
+function fmt(n){
+ return n.toFixed(3) + " ر.ع";
+}
+
+function calculate(){
+ const w=Number(document.getElementById("weight").value);
+ const p=Number(document.getElementById("price").value);
+ const m=Number(document.getElementById("making").value);
+ const t=Number(document.getElementById("tax").value);
+ const b=Number(document.getElementById("benchmark").value);
+
+ if(!Number.isFinite(w)||!Number.isFinite(p)||
+    !Number.isFinite(m)||!Number.isFinite(t)||
+    !Number.isFinite(b)||w<=0||p<=0||m<0||
+    t<0||t>100||b<0){
+   alert("يرجى إدخال بيانات صحيحة لجميع الحقول");
+   return;
+ }
+
+ const gold=w*p;
+ const work=w*m;
+ const vat=(gold+work)*t/100;
+ const total=gold+work+vat;
+
+ const fairWork=w*b;
+ const fairTotal=(gold+fairWork)*(1+t/100);
+ const diff=total-fairTotal;
+ const saving=Math.max(0,diff);
+
+ document.getElementById("gold").textContent=fmt(gold);
+ document.getElementById("work").textContent=fmt(work);
+ document.getElementById("vat").textContent=fmt(vat);
+ document.getElementById("pergram").textContent=fmt(m);
+ document.getElementById("total").textContent=fmt(total);
+ document.getElementById("fair").textContent=fmt(fairTotal);
+ document.getElementById("difference").textContent=
+   (diff>=0?"+":"")+fmt(diff);
+ document.getElementById("saving").textContent=fmt(saving);
+
+ const grade=document.getElementById("grade");
+ const analysis=document.getElementById("analysis");
+ const delta=m-b;
+
+ if(delta<=0){
+   grade.className="grade green";
+   grade.textContent="ممتاز – المصنعية أقل من المرجع";
+   analysis.textContent="المصنعية المعروضة أقل من أو تساوي المتوسط المرجعي الذي حددته.";
+ }else if(delta<=0.5){
+   grade.className="grade green";
+   grade.textContent="عادل – سعر مناسب";
+   analysis.textContent="المصنعية قريبة من المتوسط المرجعي. الصفقة تبدو مناسبة من ناحية المصنعية.";
+ }else if(delta<=1.5){
+   grade.className="grade yellow";
+   grade.textContent="مرتفع – حاول التفاوض";
+   analysis.textContent="المصنعية أعلى من المتوسط المرجعي. يمكنك محاولة التفاوض مع البائع.";
+ }else{
+   grade.className="grade red";
+   grade.textContent="مرتفع جداً – قارن الأسعار";
+   analysis.textContent="المصنعية أعلى بوضوح من المتوسط المرجعي. ننصح بمقارنة محلات أخرى قبل الشراء.";
+ }
+
+ document.getElementById("output").style.display="block";
+ document.getElementById("output").scrollIntoView({behavior:"smooth"});
+}
+</script>
+</body>
+</html>
